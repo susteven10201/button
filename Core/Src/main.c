@@ -110,7 +110,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  uint8_t button_val = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -120,14 +120,20 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	//read status of the GPIO button pin
+	button_val = HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin);
 
-	   HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5); //on board LED
-	   count++;
-	   printf("Hello World count = %d\n\r",count);
-	   HAL_Delay(1000);
-  }
+	if(button_val==0){
+		//if pressed - turn LED on
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,SET);
+	}
+	else{
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,RESET);
+	}// end if
+
+  }//end while(1)
   /* USER CODE END 3 */
-}
+}//end main
 
 /**
   * @brief System Clock Configuration
@@ -265,11 +271,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PC13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  /*Configure GPIO pin : B1_Pin */
+  GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA5 PA6 */
   GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6;
